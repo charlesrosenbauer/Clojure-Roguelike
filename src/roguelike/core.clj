@@ -25,7 +25,7 @@
 
 (defn validTile?
   [tile]
-  (contains? #{" " "#" "*"} tile))
+  (contains? #{"." "#" "*"} tile))
 
 
 
@@ -39,7 +39,7 @@
 (defn fillBlock
   "Creates a block, fills it with a specified tile. I should probably optimize this later."
   [x y tile]
-  (let [realtile (if (validTile? tile) tile " ")
+  (let [realtile (if (validTile? tile) tile tile)
         row (take 8 (cycle [realtile]))
 	      mat (take 8 (cycle [row     ]))]
 
@@ -91,6 +91,29 @@
 
 
 
+(defn roomBlock
+  [topdoor botdoor lftdoor rgtdoor x y]
+
+  (let [coords (map (fn [i] (into [] (map #(vector i %) (range 0 8)))) (range 0 8))]
+       (struct Block x y
+         (map #(into [] (map (fn [[a b]]
+                (cond
+                  (and (= a 0) (= b topdoor)) "."
+                  (and (= a 7) (= b botdoor)) "."
+                  (and (= b 0) (= a lftdoor)) "."
+                  (and (= b 7) (= a rgtdoor)) "."
+                  (or  (= a 0) (= a 7) (= b 0) (= b 7)) "#"
+                  :else ".")) %)) coords))))
+
+
+
+
+
+
+
+
+
+
 (defn -main
   [& args]
-  (println (showblock (fillBlock 0 0 "#"))))
+  (println (showblock (roomBlock 8 8 3 8 0 0))))
