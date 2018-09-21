@@ -84,10 +84,15 @@
         y_ (int (/ y 8))
         xi (mod (int x) 8)
         yi (mod (int y) 8)
-        block (get (:Blocks world) [x_ y_])]
+        block  (get (:Blocks world) [x_ y_])
+        ents   (:Entities world)
+        entity (get ents [xi yi])]
     (if (= nil block)
       " "
-      (get (get (:Tiles block) yi) xi))))
+      (if (= nil entity)
+        (get (get (:Tiles block) yi) xi)
+        (:Tile entity)
+      ))))
 
 
 
@@ -161,6 +166,19 @@
 (defn addBlockToWorld
   [world block]
   (assoc world block [(:X block) (:Y block)]))
+
+
+
+
+
+
+
+
+
+
+(defn addEntityToWorld
+  [world entity]
+  (assoc world entity [(:X entity) (:Y entity)]))
 
 
 
